@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORCE-OTP BY MR MAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #050505; color: #00ffcc; font-family: 'Fira Code', monospace; overflow-x: hidden; }
+        
+        /* Efek Skrin Hacker (Scanlines) */
+        body::after {
+            content: " "; display: block; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        .cyber-card { background: rgba(5, 5, 5, 0.95); border: 1px solid #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.15), inset 0 0 15px rgba(0,255,204,0.05); position: relative; z-index: 10; }
+        .input-vip { background: #000; border: 1px solid #333; color: #00ffcc; padding: 12px; border-radius: 4px; width: 100%; text-align: center; transition: 0.3s; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+        .input-vip:focus { border-color: #00ffcc; outline: none; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4); transform: scale(1.02); }
+        
+        #login-screen { position: fixed; inset: 0; background: radial-gradient(circle, #111 0%, #000 100%); z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; transition: opacity 0.8s ease; }
+        
+        .video-box { width: 100%; border-radius: 8px; border: 2px solid #00ffcc; margin-bottom: 20px; overflow: hidden; box-shadow: 0 0 25px rgba(0, 255, 204, 0.3); position: relative; z-index: 10; }
+        
+        /* Efek Tulisan Berkilau (Glitch / Neon) */
+        .neon-text { text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 20px #00ffcc; animation: pulsate 1.5s infinite alternate; }
+        @keyframes pulsate { 100% { text-shadow: 0 0 4px #00ffcc, 0 0 11px #00ffcc, 0 0 19px #00ffcc, 0 0 40px #00ffcc; } 0% { text-shadow: 0 0 2px #00ffcc, 0 0 4px #00ffcc, 0 0 6px #00ffcc, 0 0 10px #00ffcc; } }
+
+        .btn-glow { background: #00ffcc; color: #000; box-shadow: 0 0 10px #00ffcc; transition: 0.3s; }
+        .btn-glow:hover { background: #fff; box-shadow: 0 0 20px #fff; transform: translateY(-2px); }
+
+        .fade-in { animation: fadeIn 1s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4">
+
+    <div id="login-screen">
+        <div class="max-w-xs w-full text-center relative z-10">
+            <h1 class="text-3xl font-extrabold mb-8 italic tracking-[0.2em] text-white neon-text">FORCE ACCESS</h1>
+            <input type="password" id="passInput" class="input-vip mb-6 font-bold" placeholder="[ ENTER VIP TOKEN ]">
+            <button onclick="checkAuth()" class="w-full btn-glow font-bold py-3 rounded uppercase tracking-widest">Authorize</button>
+            <p id="err" class="text-red-500 text-[11px] mt-4 font-bold tracking-widest"></p>
+            <p class="text-gray-600 text-[9px] mt-12 uppercase tracking-[0.3em]">Restricted Database</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden w-full max-w-xl opacity-0">
+        
+        <div class="video-box">
+            <video id="cyberVideo" loop playsinline class="w-full">
+                <source src="https://files.catbox.moe/28xgz8.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="text-center mb-8 relative z-10">
+            <div class="w-12 h-1 bg-cyan-500 mx-auto mb-3 rounded-full shadow-[0_0_10px_#00ffcc]"></div>
+            <p class="text-[11px] italic text-gray-400 leading-relaxed font-sans">
+                "Kekuatan sebenar bukan pada tidak pernah melakukan kesilapan,<br>tapi pada kemampuan untuk terima diri sendiri dan terus bangkit."
+            </p>
+        </div>
+
+        <div class="cyber-card p-6 rounded-lg">
+            <div class="grid gap-4 mb-5">
+                <input type="text" id="targetName" placeholder="[ TARGET NAME ]" class="input-vip text-sm uppercase">
+                <input type="text" id="targetPhone" placeholder="[ PHONE: 6011... ]" class="input-vip text-sm">
+            </div>
+            
+            <div class="flex justify-between text-[10px] mb-4 text-gray-400 font-bold tracking-widest border-b border-gray-800 pb-2">
+                <span id="limitTxt" class="text-yellow-500">LIMIT: 0/5</span>
+                <span class="text-cyan-500">STATUS: <span class="text-green-400">VIP ACTIVE</span></span>
+            </div>
+
+            <button id="sendBtn" onclick="hantar()" class="w-full bg-green-900 border border-green-500 py-4 text-sm font-bold hover:bg-green-600 transition text-white tracking-widest shadow-[0_0_15px_rgba(0,255,0,0.2)]">EXECUTE SCRIPT</button>
+
+            <div class="mt-5 bg-black border border-gray-800 h-36 p-4 overflow-y-auto text-[10px] rounded" id="term">
+                <div class="text-gray-500 mb-1">=== FORCE TERMINAL v3.0 ===</div>
+                <div class="text-cyan-400">> System online. Waiting for payload...</div>
+            </div>
+        </div>
+
+        <p class="text-center text-[9px] text-gray-600 mt-8 tracking-[8px] relative z-10">MAM FORCE X PROJECT</p>
+    </div>
+
+    <script>
+        // --- SENARAI TOKEN ---
+        const VIP_TOKENS = [
+            "Iman-comel", 
+            "User-01", 
+            "Force-Vip",
+            "Abang-Hensem"
+        ];
+
+        function checkAuth() {
+            const input = document.getElementById('passInput').value;
+            const loginScreen = document.getElementById('login-screen');
+            const mainContent = document.getElementById('main-content');
+            const video = document.getElementById('cyberVideo');
+            
+            if (VIP_TOKENS.includes(input)) {
+                // Efek fade out login screen
+                loginScreen.style.opacity = '0';
+                
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                    mainContent.classList.add('fade-in'); // Efek masuk gempak
+                    
+                    // Mainkan video BESERTA SUARA bila dah login
+                    video.volume = 1.0; 
+                    video.play().catch(e => {
+                        console.log("Browser block auto-sound. Sila klik video untuk play.");
+                    });
+
+                }, 800); // Tunggu animasi pudar selesai
+            } else {
+                const err = document.getElementById('err');
+                err.innerText = "ACCESS DENIED: TOKEN INVALID";
+                err.classList.add('neon-text', 'text-red-500');
+            }
+        }
+
+        // --- LOGIC HANTAR & LIMIT ---
+        function hantar() {
+            const name = document.getElementById('targetName').value;
+            const phone = document.getElementById('targetPhone').value;
+            const term = document.getElementById('term');
+            const limitTxt = document.getElementById('limitTxt');
+            const btn = document.getElementById('sendBtn');
+            
+            // Cek Limit
+            const today = new Date().toDateString();
+            if(localStorage.getItem('d') !== today) {
+                localStorage.setItem('d', today);
+                localStorage.setItem('c', '0');
+            }
+            let count = parseInt(localStorage.getItem('c'));
+
+            if(!name || !phone) {
+                term.innerHTML += `<div class="text-red-500">> [ERROR] Parameter tidak lengkap!</div>`;
+                return;
+            }
+            if(count >= 5) {
+                term.innerHTML += `<div class="text-red-600 font-bold">> [CRITICAL] HAD HARIAN 5/5 TAMAT!</div>`;
+                return;
+            }
+
+            btn.innerText = "TRANSMITTING...";
+            term.innerHTML += `<div class="text-yellow-400">> Sending OTP to ${phone}...</div>`;
+            term.scrollTop = term.scrollHeight;
+            
+            fetch(`https://whatsauth-whatsapp-otp.p.rapidapi.com/send-otp/?phone=${phone}&length=5&expiry=2&company=${name}`, {
+                headers: {
+                    'x-rapidapi-key': '03f0d6b81fmsh03ec5b81392b7e3p18d176jsnf733182f0a2e',
+                    'x-rapidapi-host': 'whatsauth-whatsapp-otp.p.rapidapi.com'
+                }
+            }).then(res => {
+                if(res.ok) {
+                    count++;
+                    localStorage.setItem('c', count);
+                    limitTxt.innerText = `LIMIT: ${count}/5`;
+                    term.innerHTML += `<div class="text-green-400 font-bold">> [SUCCESS] Payload delivered to ${name}!</div>`;
+                } else {
+                    term.innerHTML += `<div class="text-red-500">> [FAILED] API Server Error.</div>`;
+                }
+                btn.innerText = "EXECUTE SCRIPT";
+                term.scrollTop = term.scrollHeight;
+            }).catch(err => {
+                term.innerHTML += `<div class="text-red-500">> [ERROR] Connection Timeout.</div>`;
+                btn.innerText = "EXECUTE SCRIPT";
+            });
+        }
+        
+        // Setup limit awal-awal
+        const todayStr = new Date().toDateString();
+        if(localStorage.getItem('d') === todayStr) {
+            document.getElementById('limitTxt').innerText = `LIMIT: ${localStorage.getItem('c') || 0}/5`;
+        }
+    </script>
+</body>
+</html>
